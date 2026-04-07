@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: url-shortener-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: url-shortener-api
+  template:
+    metadata:
+      labels:
+        app: url-shortener-api
+    spec:
+      containers:
+      - name: api
+        image: url-shortener-api:latest
+        ports:
+        - containerPort: 3001
+        env:
+        - name: PORT
+          value: "3001"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: url-shortener-ui
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: url-shortener-ui
+  template:
+    metadata:
+      labels:
+        app: url-shortener-ui
+    spec:
+      containers:
+      - name: ui
+        image: url-shortener-ui:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi

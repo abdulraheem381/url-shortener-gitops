@@ -48,9 +48,9 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          cd k8s/base
-          kustomize edit set image url-shortener-api=$ECR_REGISTRY/url-shortener-api:$IMAGE_TAG
-          kustomize edit set image url-shortener-ui=$ECR_REGISTRY/url-shortener-ui:$IMAGE_TAG
+          cd k8s
+          sed -i "s|image: url-shortener-api:.*|image: $ECR_REGISTRY/url-shortener-api:$IMAGE_TAG|g" deployments.yaml
+          sed -i "s|image: url-shortener-ui:.*|image: $ECR_REGISTRY/url-shortener-ui:$IMAGE_TAG|g" deployments.yaml
           
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
