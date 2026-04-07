@@ -10,14 +10,24 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-  eks_managed_node_groups = {
-    standard = {
-      min_size     = 2
-      max_size     = 5
-      desired_size = 2
-
-      instance_types = ["t3.medium"]
-      capacity_type  = "SPOT" # Cost optimization for dev/staging
+  fargate_profiles = {
+    kube_system = {
+      name = "kube-system"
+      selectors = [
+        { namespace = "kube-system" }
+      ]
+    }
+    argocd = {
+      name = "argocd"
+      selectors = [
+        { namespace = "argocd" }
+      ]
+    }
+    application = {
+      name = var.environment
+      selectors = [
+        { namespace = var.environment }
+      ]
     }
   }
 
@@ -26,12 +36,20 @@ module "eks" {
       principal_arn = data.aws_caller_identity.current.arn
       policy_associations = {
         admin = {
-          policy_arn = "arn:aws:eks:aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
           access_scope = {
             type = "cluster"
           }
         }
       }
+    }
+  }
+
+  # IAM for Fargate Pods
+  fargate_profile_defaults = {
+    iam_role_additional_policies = {
+      AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+      CloudWatchLogsFullAccess           = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
     }
   }
 

@@ -20,12 +20,42 @@ resource "helm_release" "argocd" {
     name  = "server.insecure"
     value = "true"
   }
+
+  set {
+    name  = "redis.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "redis-ha.enabled"
+    value = "false"
+  }
+
+  set {
+    name  = "server.persistence.enabled"
+    value = "false"
+  }
+
+  set {
+    name  = "repoServer.persistence.enabled"
+    value = "false"
+  }
+
+  set {
+    name  = "controller.persistence.enabled"
+    value = "false"
+  }
+
+  set {
+    name  = "redis.persistence.enabled"
+    value = "false"
+  }
 }
 
 # Bootstrapping the root application for GitOps
 resource "kubectl_manifest" "argocd_root_app" {
   depends_on = [helm_release.argocd]
-  yaml_body = <<YAML
+  yaml_body  = <<YAML
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -34,9 +64,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/yourusername/url-shortener-gitops.git # USER: REPLACE WITH YOUR REPO
+    repoURL: https://github.com/abdulraheem381/url-shortener-gitops.git
     targetRevision: HEAD
-    path: infra/argocd
+    path: k8s
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
