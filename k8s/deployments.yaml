@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: url-shortener-api:latest
+        image: 381940662325.dkr.ecr.ap-south-1.amazonaws.com/url-shortener-api:4ac785c272340af0d07adcab0775af0dea631c63
         ports:
         - containerPort: 3001
         env:
@@ -44,7 +44,7 @@ spec:
     spec:
       containers:
       - name: ui
-        image: url-shortener-ui:latest
+        image: 381940662325.dkr.ecr.ap-south-1.amazonaws.com/url-shortener-ui:4ac785c272340af0d07adcab0775af0dea631c63
         ports:
         - containerPort: 80
         resources:
