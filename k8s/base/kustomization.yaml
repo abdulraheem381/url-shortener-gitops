@@ -1,0 +1,5 @@
+resources:
+  - deployment-ui.yaml
+  - service-ui.yaml
+  - rollout-api.yaml
+  - service-api.yaml
